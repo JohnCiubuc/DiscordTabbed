@@ -44,7 +44,6 @@ private:
     QUrl _lastDiscordChannel;
     QList<QWebEngineView*> _views;
     QSplitter * _split;
-    QWebEngineView * _firstView;
     PreferencesForm * _Preferences;
     int _ctrlD = 0;
 protected:

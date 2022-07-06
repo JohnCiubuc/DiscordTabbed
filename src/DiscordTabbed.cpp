@@ -6,32 +6,14 @@ DiscordTabbed::DiscordTabbed(QWidget *parent)
     , ui(new Ui::DiscordTabbed)
 {
     ui->setupUi(this);
-//    ui->webEngineView->set
     this->installEventFilter(this);
-
-    _firstView = new QWebEngineView();
-    _firstView->setMinimumWidth(100);
-
     _Preferences = new PreferencesForm();
 
     _split = new QSplitter();
     ui->horizontalLayout->addWidget(_split);
 
-    _split->addWidget(_firstView);
-    _firstView->show();
-
-    DiscordTabbedPage * page = new DiscordTabbedPage(_firstView);
-    _firstView->setPage(page);
-    connect(page, &DiscordTabbedPage::generateViewWithURL, this, &DiscordTabbed::generateViewWithURL);
-//    ui->webEngineView->load(QUrl("https://discord.com/login?redirect_to=%2Fchannels%2F%40me"));
-    _firstView->load(QUrl("https://discord.com/channels/122962330165313536/246318973019357196"));
-    connect(_firstView, &QWebEngineView::urlChanged, this, &DiscordTabbed::urlChanged);
-    connect(_firstView, &QWebEngineView::loadFinished, this, [=]()
-    {
-        db "finished";
-//        generateNewView();
-
-    });
+    _lastDiscordChannel = QUrl("https://discord.com/login?redirect_to=%2Fchannels%2F%40me");
+    generateNewView();
 }
 
 DiscordTabbed::~DiscordTabbed()
@@ -49,57 +31,54 @@ void DiscordTabbed::stripDiscord(QWebEnginePage *page)
             elem.parentNode.removeChild(elem);\
         "
     );
-//    ui->webEngineView->page()->runJavaScript(
-//        "\
-//                       var elem = document.querySelector('div[class^=\"chat\"]');\
-//                       elem.parentNode.removeChild(elem);\
-//        "
-//    );
 }
 
 
 void DiscordTabbed::urlChanged(QUrl url)
 {
-
-//    if (url == QUrl("https://discord.com/app") && views.size() < 1)
-//    {
-//        ui->webEngineView->setMaximumWidth(330);
-//        generateNewView();
-
-//    }
-//    if(url.toString().contains("https://discord.com/channels/"))
-//    {
-//        views.last()->setPage(ui->webEngineView->page());
-//    }
     db url;
     _lastDiscordChannel = url;
 }
 
 void DiscordTabbed::generateNewView()
 {
+    // Create new view, set minimal width for splitter
     _ctrlD = 0;
     _views << new QWebEngineView(this);
+    _views.last()->setMinimumWidth(100);
+
+    // If this is the first view, its the one with channels
+    if (_views.size() == 1)
+        connect(_views.last(), &QWebEngineView::urlChanged, this, &DiscordTabbed::urlChanged);
+
+    // Create page
     DiscordTabbedPage * page = new DiscordTabbedPage(_views.last());
-    _views.last()->setPage(page);
+    page->setEmbedLinks(_Preferences->getYoutubeEmbed(), _Preferences->getTwitchEmbed());
     connect(page, &DiscordTabbedPage::generateViewWithURL, this, &DiscordTabbed::generateViewWithURL);
-    _views.last()->load(_lastDiscordChannel);
-//    ui->horizontalLayout->addWidget(views.last());
+    _views.last()->setPage(page);
+
+    // Add view to splitter
     _split->addWidget(_views.last());
-    connect(_views.last(), &QWebEngineView::urlChanged, this, [=]()
+
+    // If this is a sub-view, strip channels
+    if (_views.size() != 1)
     {
-        stripDiscord(_views.last()->page());
-    });
-//    _split->setRubberBand(views.size());
+        connect(_views.last(), &QWebEngineView::urlChanged, this, [=]()
+        {
+            stripDiscord(_views.last()->page());
+        });
+    }
+
+    // Load view
+    _views.last()->load(_lastDiscordChannel);
 }
 
 void DiscordTabbed::removeLastView()
 {
     _ctrlD = 0;
-    if (_views.size() < 1) return;
+    if (_views.size() < 2) return;
     _views.last()->hide();
-//    ui->horizontalLayout->removeWidget(views.last());
-    auto a = _views.takeLast();
-    a->deleteLater();
+    _views.takeLast()->deleteLater();
 }
 
 bool DiscordTabbed::eventFilter(QObject *obj, QEvent *ev)
@@ -140,26 +119,13 @@ bool DiscordTabbed::eventFilter(QObject *obj, QEvent *ev)
 
 void DiscordTabbed::on_actionReload_Far_Left_View_triggered()
 {
-    _firstView->reload();
+    _views.first()->reload();
 }
 
 
 void DiscordTabbed::on_actionExpand_Retract_Left_View_triggered()
 {
     removeLastView();
-//    if(ui->webEngineView->geometry().width() <= 330)
-//    {
-//        for(QWebEngineView* view : views)
-//            view->hide();
-//        ui->webEngineView->setMaximumWidth(99999);
-//    }
-//    else
-//    {
-
-//        for(QWebEngineView* view : views)
-//            view->show();
-//        ui->webEngineView->setMaximumWidth(330);
-//    }
 }
 
 void DiscordTabbed::generateViewWithURL(QUrl url)

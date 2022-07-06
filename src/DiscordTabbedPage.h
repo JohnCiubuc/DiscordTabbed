@@ -13,29 +13,12 @@ signals:
     void generateViewWithURL(QUrl);
 public:
     explicit DiscordTabbedPage(QObject *parent = nullptr);
-    bool acceptNavigationRequest(const QUrl & url, QWebEnginePage::NavigationType type, bool isMainFrame)
-    {
-        qDebug() << "acceptNavigationRequest("<<url << "," << type << "," << isMainFrame<<")";
-
-        if(type == QWebEnginePage::NavigationTypeLinkClicked)
-        {
-            if (url.toString().contains("youtube.com") ||
-                    url.toString().contains("twitch.tv")||
-                    url.toString().contains("youtu.be") )
-            {
-                emit generateViewWithURL(url);
-                return false;
-            }
-            else
-            {
-                QDesktopServices::openUrl(url);
-                return false;
-            }
-        }
-        return true;
-    }
+    void setEmbedLinks(bool y,bool t);
+    bool acceptNavigationRequest(const QUrl & url, QWebEnginePage::NavigationType type, bool isMainFrame);
 private:
     bool _bNewLink = false;
+    bool _bYoutubeEmbed;
+    bool _bTwitchEmbed;
 };
 
 #endif // DISCORDTABBEDPAGE_H
