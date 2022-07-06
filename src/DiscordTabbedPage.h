@@ -6,6 +6,23 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QTimer>
+#include <QDebug>
+
+
+class FakePage : public QWebEnginePage
+{
+public:
+    explicit FakePage()
+    {
+        connect(this, &QWebEnginePage::urlChanged, this, [=](QUrl url)
+        {
+
+            QDesktopServices::openUrl(url);
+            this->deleteLater();
+        });
+    }
+};
+
 class DiscordTabbedPage : public QWebEnginePage
 {
     Q_OBJECT
@@ -19,6 +36,12 @@ private:
     bool _bNewLink = false;
     bool _bYoutubeEmbed;
     bool _bTwitchEmbed;
+protected:
+
+    QWebEnginePage  *createWindow(WebWindowType type)
+    {
+        return new FakePage;
+    }
 };
 
 #endif // DISCORDTABBEDPAGE_H

@@ -8,6 +8,7 @@ DiscordTabbed::DiscordTabbed(QWidget *parent)
     ui->setupUi(this);
     this->installEventFilter(this);
     _Preferences = new PreferencesForm();
+    connect(_Preferences, &PreferencesForm::preferencesUpdated, this, &DiscordTabbed::preferencesUpdated);
 
     _split = new QSplitter();
     ui->horizontalLayout->addWidget(_split);
@@ -45,11 +46,21 @@ void DiscordTabbed::generateNewView()
     // Create new view, set minimal width for splitter
     _ctrlD = 0;
     _views << new QWebEngineView(this);
-    _views.last()->setMinimumWidth(100);
+    _views.last()->setMinimumWidth(200);
+
+//    // Make it spiffy
+//    _views.last()->settings()
+//    ->setAttribute(QWebSettings::JavascriptEnabled, true);
+//    _views.last()->settings()
+//    ->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows,true);
 
     // If this is the first view, its the one with channels
     if (_views.size() == 1)
         connect(_views.last(), &QWebEngineView::urlChanged, this, &DiscordTabbed::urlChanged);
+    connect(_views.last()->page(), &QWebEnginePage::linkHovered, this, [=](const QString &url)
+    {
+        db url;
+    });
 
     // Create page
     DiscordTabbedPage * page = new DiscordTabbedPage(_views.last());
@@ -119,7 +130,9 @@ bool DiscordTabbed::eventFilter(QObject *obj, QEvent *ev)
 
 void DiscordTabbed::on_actionReload_Far_Left_View_triggered()
 {
-    _views.first()->reload();
+
+    _lastDiscordChannel = QUrl("https://discord.com/login?redirect_to=%2Fchannels%2F%40me");
+    _views.first()->load(_lastDiscordChannel);
 }
 
 
@@ -140,5 +153,13 @@ void DiscordTabbed::generateViewWithURL(QUrl url)
 void DiscordTabbed::on_actionOpen_Preferences_triggered()
 {
     _Preferences->show();
+}
+
+void DiscordTabbed::preferencesUpdated()
+{
+    for (auto view : _views)
+        dynamic_cast<DiscordTabbedPage*>(view->page())
+        ->setEmbedLinks(_Preferences->getYoutubeEmbed(),
+                        _Preferences->getTwitchEmbed());
 }
 

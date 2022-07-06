@@ -8,6 +8,7 @@
 
 #include <QDebug>
 #include <QSplitter>
+#include <QWebEngineSettings>
 #include "DiscordTabbedPage.h"
 #include "PreferencesForm.h"
 #define db qDebug() << this <<
@@ -38,7 +39,7 @@ private slots:
     void on_actionExpand_Retract_Left_View_triggered();
     void generateViewWithURL(QUrl url);
     void on_actionOpen_Preferences_triggered();
-
+    void preferencesUpdated();
 private:
     Ui::DiscordTabbed *ui;
     QUrl _lastDiscordChannel;

@@ -31,6 +31,7 @@ void PreferencesForm::on_checkBox_clicked(bool checked)
 {
     QSettings settings("DiscordTabbed");
     settings.setValue("youtube-embed", checked);
+    emit preferencesUpdated();
 }
 
 
@@ -39,6 +40,7 @@ void PreferencesForm::on_checkBox_2_clicked(bool checked)
 
     QSettings settings("DiscordTabbed");
     settings.setValue("twitch-embed", checked);
+    emit preferencesUpdated();
 }
 
 void PreferencesForm::loadSettings()

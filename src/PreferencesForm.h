@@ -13,7 +13,8 @@ class PreferencesForm;
 class PreferencesForm : public QWidget
 {
     Q_OBJECT
-
+signals:
+    void preferencesUpdated();
 public:
     explicit PreferencesForm(QWidget *parent = nullptr);
     ~PreferencesForm();
