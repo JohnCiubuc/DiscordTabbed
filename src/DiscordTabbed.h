@@ -44,6 +44,8 @@ private slots:
     void generateViewWithURL(QUrl url);
     void on_actionOpen_Preferences_triggered();
     void preferencesUpdated();
+    void on_actionEmbed_Current_Channel_triggered();
+
 private:
     Ui::DiscordTabbed *ui;
     QUrl _lastDiscordChannel;

@@ -3,7 +3,8 @@
 DiscordTabbedPage::DiscordTabbedPage(QObject *parent)
     : QWebEnginePage{parent}
 {
-
+    interp = new WebUrlRequestInterceptor;
+    this->setUrlRequestInterceptor(interp);
 
 }
 
@@ -11,6 +12,7 @@ void DiscordTabbedPage::setEmbedLinks(QStringList list)
 {
     _embedLinks = list;
     db _embedLinks;
+    interp->setEmbedLinks(_embedLinks);
 }
 bool DiscordTabbedPage::acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame)
 {

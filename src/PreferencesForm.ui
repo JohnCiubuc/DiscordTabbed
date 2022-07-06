@@ -74,7 +74,7 @@ twitch.tv</string>
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Each url on a new line below will be embedded
-when clicked inside discord</string>
+when ctrl+clicked inside discord</string>
         </property>
        </widget>
       </item>

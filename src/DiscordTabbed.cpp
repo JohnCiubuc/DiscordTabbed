@@ -82,6 +82,7 @@ void DiscordTabbed::generateNewView()
 
     DiscordTabbedPage * page = new DiscordTabbedPage(profile);
     page->setEmbedLinks(_Preferences->getEmbedLinks());
+
     connect(page, &DiscordTabbedPage::generateViewWithURL, this, &DiscordTabbed::generateViewWithURL);
     _views.last()->setPage(page);
 
@@ -92,6 +93,10 @@ void DiscordTabbed::generateNewView()
     if (_views.size() != 1)
     {
         connect(_views.last(), &QWebEngineView::urlChanged, this, [=]()
+        {
+            stripDiscord(_views.last()->page());
+        });
+        connect(_views.last(), &QWebEngineView::loadFinished, this, [=]()
         {
             stripDiscord(_views.last()->page());
         });
@@ -177,5 +182,11 @@ void DiscordTabbed::preferencesUpdated()
     for (auto view : _views)
         dynamic_cast<DiscordTabbedPage*>(view->page())
         ->setEmbedLinks(_Preferences->getEmbedLinks());
+}
+
+
+void DiscordTabbed::on_actionEmbed_Current_Channel_triggered()
+{
+    generateNewView();
 }
 

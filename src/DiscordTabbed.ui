@@ -14,7 +14,8 @@
    <string>DiscordTabbed</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(54, 57, 63);</string>
+   <string notr="true">background-color: rgb(54, 57, 63);
+color: rgb(246, 245, 244);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -49,6 +50,7 @@
      <string>Menu</string>
     </property>
     <addaction name="actionReload_Far_Left_View"/>
+    <addaction name="actionEmbed_Current_Channel"/>
     <addaction name="actionExpand_Retract_Left_View"/>
    </widget>
    <widget class="QMenu" name="menuPreferences">
@@ -74,6 +76,11 @@
   <action name="actionOpen_Preferences">
    <property name="text">
     <string>Open Preferences</string>
+   </property>
+  </action>
+  <action name="actionEmbed_Current_Channel">
+   <property name="text">
+    <string>Embed Current Channel</string>
    </property>
   </action>
  </widget>

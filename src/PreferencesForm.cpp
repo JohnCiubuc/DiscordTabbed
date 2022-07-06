@@ -61,7 +61,9 @@ void PreferencesForm::on_plainTextEdit_textChanged()
 {
     QString plainText = ui->plainTextEdit->toPlainText();
     _embedLinks = plainText.split('\n');
+
     QSettings settings("DiscordTabbed");
     settings.setValue("embed-links", _embedLinks);
+    emit preferencesUpdated();
 }
 
