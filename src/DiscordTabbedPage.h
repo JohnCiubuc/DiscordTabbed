@@ -16,7 +16,6 @@ public:
     {
         connect(this, &QWebEnginePage::urlChanged, this, [=](QUrl url)
         {
-
             QDesktopServices::openUrl(url);
             this->deleteLater();
         });

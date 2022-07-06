@@ -9,6 +9,10 @@
 #include <QDebug>
 #include <QSplitter>
 #include <QWebEngineSettings>
+#include <QWebEngineProfile>
+#include <QKeySequence>
+#include <QShortcut>
+
 #include "DiscordTabbedPage.h"
 #include "PreferencesForm.h"
 #define db qDebug() << this <<

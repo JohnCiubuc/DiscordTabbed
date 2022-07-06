@@ -15,6 +15,11 @@ DiscordTabbed::DiscordTabbed(QWidget *parent)
 
     _lastDiscordChannel = QUrl("https://discord.com/login?redirect_to=%2Fchannels%2F%40me");
     generateNewView();
+// Shortcuts
+    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_D), this), &QShortcut::activated,
+            this, &DiscordTabbed::generateNewView);
+    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_D), this), &QShortcut::activated,
+            this, &DiscordTabbed::removeLastView);
 }
 
 DiscordTabbed::~DiscordTabbed()
@@ -47,6 +52,9 @@ void DiscordTabbed::generateNewView()
     _ctrlD = 0;
     _views << new QWebEngineView(this);
     _views.last()->setMinimumWidth(200);
+
+    QWebEngineProfile::defaultProfile()
+    ->setPersistentCookiesPolicy(QWebEngineProfile::ForcePersistentCookies);
 
 //    // Make it spiffy
 //    _views.last()->settings()
@@ -94,36 +102,36 @@ void DiscordTabbed::removeLastView()
 
 bool DiscordTabbed::eventFilter(QObject *obj, QEvent *ev)
 {
-    if (ev->type() == QEvent::KeyPress)
-    {
-        db static_cast<QKeyEvent*>(ev)->key();
-        if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Control ||
-                static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Shift)
-            _ctrlD++;
-        else if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_D)
-        {
-            switch(_ctrlD)
-            {
-            case 1:
-                generateNewView();
-                break;
-            case 2:
-                removeLastView();
-                break;
-            }
+//    if (ev->type() == QEvent::KeyPress)
+//    {
+//        db static_cast<QKeyEvent*>(ev)->key();
+//        if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Control ||
+//                static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Shift)
+//            _ctrlD++;
+//        else if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_D)
+//        {
+//            switch(_ctrlD)
+//            {
+//            case 1:
+//                generateNewView();
+//                break;
+//            case 2:
+//                removeLastView();
+//                break;
+//            }
 
-        }
-        else if (ev->type() == QEvent::KeyRelease)
-        {
-            if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Control ||
-                    static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Shift)
-            {
-                _ctrlD--;
-                if (_ctrlD<0)
-                    _ctrlD = 0;
-            }
-        }
-    }
+//        }
+//        else if (ev->type() == QEvent::KeyRelease)
+//        {
+//            if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Control ||
+//                    static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Shift)
+//            {
+//                _ctrlD--;
+//                if (_ctrlD<0)
+//                    _ctrlD = 0;
+//            }
+//        }
+//    }
     return QMainWindow::eventFilter(obj, ev);
 }
 
