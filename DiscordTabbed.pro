@@ -9,15 +9,18 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    main.cpp \
+    src/PreferencesForm.cpp \
+    src/main.cpp \
     src/DiscordTabbed.cpp \
     src/DiscordTabbedPage.cpp
 
 HEADERS += \
+    src/PreferencesForm.h \
     src/DiscordTabbed.h \
     src/DiscordTabbedPage.h
 
 FORMS += \
+    src/PreferencesForm.ui \
     src/DiscordTabbed.ui
 
 # Default rules for deployment.

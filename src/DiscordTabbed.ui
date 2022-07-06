@@ -72,7 +72,15 @@
     <addaction name="actionReload_Far_Left_View"/>
     <addaction name="actionExpand_Retract_Left_View"/>
    </widget>
+   <widget class="QMenu" name="menuPreferences">
+    <property name="title">
+     <string>Preferences</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionOpen_Preferences"/>
+   </widget>
    <addaction name="menuMenu"/>
+   <addaction name="menuPreferences"/>
   </widget>
   <action name="actionReload_Far_Left_View">
    <property name="text">
@@ -82,6 +90,11 @@
   <action name="actionExpand_Retract_Left_View">
    <property name="text">
     <string>Close Rightmost View</string>
+   </property>
+  </action>
+  <action name="actionOpen_Preferences">
+   <property name="text">
+    <string>Open Preferences</string>
    </property>
   </action>
  </widget>

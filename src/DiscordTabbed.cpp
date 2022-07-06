@@ -12,6 +12,8 @@ DiscordTabbed::DiscordTabbed(QWidget *parent)
     _firstView = new QWebEngineView();
     _firstView->setMinimumWidth(100);
 
+    _Preferences = new PreferencesForm();
+
     _split = new QSplitter();
     ui->horizontalLayout->addWidget(_split);
 
@@ -70,33 +72,33 @@ void DiscordTabbed::urlChanged(QUrl url)
 //        views.last()->setPage(ui->webEngineView->page());
 //    }
     db url;
-    lastDiscordChannel = url;
+    _lastDiscordChannel = url;
 }
 
 void DiscordTabbed::generateNewView()
 {
-    ctrlD = 0;
-    views << new QWebEngineView(this);
-    DiscordTabbedPage * page = new DiscordTabbedPage(views.last());
-    views.last()->setPage(page);
+    _ctrlD = 0;
+    _views << new QWebEngineView(this);
+    DiscordTabbedPage * page = new DiscordTabbedPage(_views.last());
+    _views.last()->setPage(page);
     connect(page, &DiscordTabbedPage::generateViewWithURL, this, &DiscordTabbed::generateViewWithURL);
-    views.last()->load(lastDiscordChannel);
+    _views.last()->load(_lastDiscordChannel);
 //    ui->horizontalLayout->addWidget(views.last());
-    _split->addWidget(views.last());
-    connect(views.last(), &QWebEngineView::urlChanged, this, [=]()
+    _split->addWidget(_views.last());
+    connect(_views.last(), &QWebEngineView::urlChanged, this, [=]()
     {
-        stripDiscord(views.last()->page());
+        stripDiscord(_views.last()->page());
     });
 //    _split->setRubberBand(views.size());
 }
 
 void DiscordTabbed::removeLastView()
 {
-    ctrlD = 0;
-    if (views.size() < 1) return;
-    views.last()->hide();
+    _ctrlD = 0;
+    if (_views.size() < 1) return;
+    _views.last()->hide();
 //    ui->horizontalLayout->removeWidget(views.last());
-    auto a = views.takeLast();
+    auto a = _views.takeLast();
     a->deleteLater();
 }
 
@@ -107,10 +109,10 @@ bool DiscordTabbed::eventFilter(QObject *obj, QEvent *ev)
         db static_cast<QKeyEvent*>(ev)->key();
         if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Control ||
                 static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Shift)
-            ctrlD++;
+            _ctrlD++;
         else if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_D)
         {
-            switch(ctrlD)
+            switch(_ctrlD)
             {
             case 1:
                 generateNewView();
@@ -126,9 +128,9 @@ bool DiscordTabbed::eventFilter(QObject *obj, QEvent *ev)
             if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Control ||
                     static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Shift)
             {
-                ctrlD--;
-                if (ctrlD<0)
-                    ctrlD = 0;
+                _ctrlD--;
+                if (_ctrlD<0)
+                    _ctrlD = 0;
             }
         }
     }
@@ -162,9 +164,15 @@ void DiscordTabbed::on_actionExpand_Retract_Left_View_triggered()
 
 void DiscordTabbed::generateViewWithURL(QUrl url)
 {
-    auto old = lastDiscordChannel;
-    lastDiscordChannel = url;
+    auto old = _lastDiscordChannel;
+    _lastDiscordChannel = url;
     generateNewView();
-    lastDiscordChannel = old;
+    _lastDiscordChannel = old;
+}
+
+
+void DiscordTabbed::on_actionOpen_Preferences_triggered()
+{
+    _Preferences->show();
 }
 

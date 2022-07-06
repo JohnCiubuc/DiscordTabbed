@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QSplitter>
 #include "DiscordTabbedPage.h"
+#include "PreferencesForm.h"
 #define db qDebug() << this <<
 
 QT_BEGIN_NAMESPACE
@@ -36,14 +37,17 @@ private slots:
 
     void on_actionExpand_Retract_Left_View_triggered();
     void generateViewWithURL(QUrl url);
+    void on_actionOpen_Preferences_triggered();
+
 private:
     Ui::DiscordTabbed *ui;
-    QUrl lastDiscordChannel;
-    QList<QWebEngineView*> views;
+    QUrl _lastDiscordChannel;
+    QList<QWebEngineView*> _views;
     QSplitter * _split;
     QWebEngineView * _firstView;
+    PreferencesForm * _Preferences;
+    int _ctrlD = 0;
 protected:
     bool eventFilter(QObject *obj, QEvent *ev);
-    int ctrlD = 0;
 };
 #endif // DISCORDTABBED_H
