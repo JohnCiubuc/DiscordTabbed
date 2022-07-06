@@ -16,15 +16,15 @@ PreferencesForm::~PreferencesForm()
     delete ui;
 }
 
-bool PreferencesForm::getYoutubeEmbed()
-{
-    return ui->checkBox->isChecked();
-}
+//bool PreferencesForm::getYoutubeEmbed()
+//{
+//    return ui->checkBox->isChecked();
+//}
 
-bool PreferencesForm::getTwitchEmbed()
-{
-    return ui->checkBox_2->isChecked();
-}
+//bool PreferencesForm::getTwitchEmbed()
+//{
+//    return ui->checkBox_2->isChecked();
+//}
 
 
 void PreferencesForm::on_checkBox_clicked(bool checked)
@@ -45,8 +45,23 @@ void PreferencesForm::on_checkBox_2_clicked(bool checked)
 
 void PreferencesForm::loadSettings()
 {
+
     QSettings settings("DiscordTabbed");
-    ui->checkBox->setChecked(settings.value("youtube-embed", true).toBool());
-    ui->checkBox_2->setChecked(settings.value("twitch-embed", true).toBool());
+    _embedLinks = settings.value("embed-links", QStringList()).toStringList();
+    if (!_embedLinks.isEmpty())
+        ui->plainTextEdit->setPlainText(_embedLinks.join('\n'));
+    else
+        _embedLinks = ui->plainTextEdit->toPlainText().split('\n');
+//    ui->checkBox->setChecked(settings.value("youtube-embed", true).toBool());
+//    ui->checkBox_2->setChecked(settings.value("twitch-embed", true).toBool());
+}
+
+
+void PreferencesForm::on_plainTextEdit_textChanged()
+{
+    QString plainText = ui->plainTextEdit->toPlainText();
+    _embedLinks = plainText.split('\n');
+    QSettings settings("DiscordTabbed");
+    settings.setValue("embed-links", _embedLinks);
 }
 

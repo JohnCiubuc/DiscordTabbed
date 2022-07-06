@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>241</height>
+    <width>374</width>
+    <height>288</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,30 +20,6 @@
       <string>Settings save automagically</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Shortcut to close rightmost channel:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Shortcut to embed channel:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="lineEdit">
-        <property name="text">
-         <string>Ctrl + D</string>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="4" column="1">
        <widget class="QLineEdit" name="lineEdit_2">
         <property name="text">
@@ -61,17 +37,44 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QCheckBox" name="checkBox_2">
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Open Twitch links as embeded views</string>
+         <string>Shortcut to close rightmost channel:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="text">
+         <string>Ctrl + D</string>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Shortcut to embed channel:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QPlainTextEdit" name="plainTextEdit">
+        <property name="plainText">
+         <string>youtube.com
+youtu.be
+twitch.tv</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0" colspan="2">
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Open YouTube links as embeded views</string>
+         <string>Each url on a new line below will be embedded
+when clicked inside discord</string>
         </property>
        </widget>
       </item>

@@ -4,12 +4,13 @@ DiscordTabbedPage::DiscordTabbedPage(QObject *parent)
     : QWebEnginePage{parent}
 {
 
+
 }
 
-void DiscordTabbedPage::setEmbedLinks(bool y, bool t)
+void DiscordTabbedPage::setEmbedLinks(QStringList list)
 {
-    _bYoutubeEmbed = y;
-    _bTwitchEmbed = t;
+    _embedLinks = list;
+    db _embedLinks;
 }
 bool DiscordTabbedPage::acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame)
 {
@@ -18,26 +19,17 @@ bool DiscordTabbedPage::acceptNavigationRequest(const QUrl &url, NavigationType 
     // can i use less if statements please, shesh
     if(type == QWebEnginePage::NavigationTypeLinkClicked)
     {
-        if (_bYoutubeEmbed)
+        QString urlString = url.toString();
+        for (auto link : _embedLinks)
         {
-            if (url.toString().contains("youtube.com") ||
-                    url.toString().contains("youtu.be"))
+            if(urlString.contains(link))
             {
                 emit generateViewWithURL(url);
                 return false;
             }
         }
-        else if (_bTwitchEmbed && url.toString().contains("twitch.tv"))
-        {
-
-            emit generateViewWithURL(url);
-            return false;
-        }
-        else
-        {
-            QDesktopServices::openUrl(url);
-            return false;
-        }
+        QDesktopServices::openUrl(url);
+        return false;
     }
     return true;
 }

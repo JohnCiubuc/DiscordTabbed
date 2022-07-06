@@ -19,17 +19,24 @@ public:
     explicit PreferencesForm(QWidget *parent = nullptr);
     ~PreferencesForm();
 
-    bool getYoutubeEmbed();
-    bool getTwitchEmbed();
+    QStringList getEmbedLinks()
+    {
+        return _embedLinks;
+    }
+//    bool getYoutubeEmbed();
+//    bool getTwitchEmbed();
 private slots:
 
     void on_checkBox_clicked(bool checked);
 
     void on_checkBox_2_clicked(bool checked);
 
+    void on_plainTextEdit_textChanged();
+
 private:
     void loadSettings();
     Ui::PreferencesForm *ui;
+    QStringList _embedLinks;
 };
 
 #endif // PREFERENCESFORM_H

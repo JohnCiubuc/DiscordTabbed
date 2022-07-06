@@ -6,6 +6,10 @@ DiscordTabbed::DiscordTabbed(QWidget *parent)
     , ui(new Ui::DiscordTabbed)
 {
     ui->setupUi(this);
+
+    QSettings settings("DiscordTabbed");
+    this->setGeometry(settings.value("geometry", this->geometry()).toRect());
+
     this->installEventFilter(this);
     _Preferences = new PreferencesForm();
     connect(_Preferences, &PreferencesForm::preferencesUpdated, this, &DiscordTabbed::preferencesUpdated);
@@ -24,6 +28,9 @@ DiscordTabbed::DiscordTabbed(QWidget *parent)
 
 DiscordTabbed::~DiscordTabbed()
 {
+
+    QSettings settings("DiscordTabbed");
+    settings.setValue("geometry", this->geometry());
     delete ui;
 }
 
@@ -53,8 +60,7 @@ void DiscordTabbed::generateNewView()
     _views << new QWebEngineView(this);
     _views.last()->setMinimumWidth(200);
 
-    QWebEngineProfile::defaultProfile()
-    ->setPersistentCookiesPolicy(QWebEngineProfile::ForcePersistentCookies);
+
 
 //    // Make it spiffy
 //    _views.last()->settings()
@@ -71,8 +77,11 @@ void DiscordTabbed::generateNewView()
     });
 
     // Create page
-    DiscordTabbedPage * page = new DiscordTabbedPage(_views.last());
-    page->setEmbedLinks(_Preferences->getYoutubeEmbed(), _Preferences->getTwitchEmbed());
+    QWebEngineProfile *profile = new QWebEngineProfile(QString::fromLatin1("DiscordTabbed.%1"));  // unique profile store per qtwbengine version
+    profile->setPersistentCookiesPolicy(QWebEngineProfile::ForcePersistentCookies);
+
+    DiscordTabbedPage * page = new DiscordTabbedPage(profile);
+    page->setEmbedLinks(_Preferences->getEmbedLinks());
     connect(page, &DiscordTabbedPage::generateViewWithURL, this, &DiscordTabbed::generateViewWithURL);
     _views.last()->setPage(page);
 
@@ -167,7 +176,6 @@ void DiscordTabbed::preferencesUpdated()
 {
     for (auto view : _views)
         dynamic_cast<DiscordTabbedPage*>(view->page())
-        ->setEmbedLinks(_Preferences->getYoutubeEmbed(),
-                        _Preferences->getTwitchEmbed());
+        ->setEmbedLinks(_Preferences->getEmbedLinks());
 }
 
