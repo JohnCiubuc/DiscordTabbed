@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>901</width>
-    <height>497</height>
+    <width>892</width>
+    <height>502</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,7 +41,7 @@ color: rgb(246, 245, 244);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>901</width>
+     <width>892</width>
      <height>23</height>
     </rect>
    </property>
@@ -51,7 +51,6 @@ color: rgb(246, 245, 244);</string>
     </property>
     <addaction name="actionReload_Far_Left_View"/>
     <addaction name="actionEmbed_Current_Channel"/>
-    <addaction name="actionExpand_Retract_Left_View"/>
    </widget>
    <widget class="QMenu" name="menuPreferences">
     <property name="title">

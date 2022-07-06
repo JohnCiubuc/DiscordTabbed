@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
-    <height>288</height>
+    <width>367</width>
+    <height>341</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -79,6 +79,13 @@ when ctrl+clicked inside discord</string>
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>Open GPU Embed View</string>
+     </property>
     </widget>
    </item>
   </layout>

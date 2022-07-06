@@ -61,9 +61,10 @@ class DiscordTabbedPage : public QWebEnginePage
 signals:
     void generateViewWithURL(QUrl);
 public:
-    explicit DiscordTabbedPage(QObject *parent = nullptr);
+    explicit DiscordTabbedPage(QWebEngineProfile * profile = nullptr, QObject *parent = nullptr);
     void setEmbedLinks(QStringList list);
     bool acceptNavigationRequest(const QUrl & url, QWebEnginePage::NavigationType type, bool isMainFrame);
+    void requestDelete();
 private:
     bool _bNewLink = false;
     bool _bYoutubeEmbed;
@@ -72,12 +73,26 @@ private:
     WebUrlRequestInterceptor * interp;
 protected:
 
-//    QWebEnginePage  *createWindow(WebWindowType type)
-//    {
-////        return false;
-//        db "window type - " << type;
-//        return new FakePage;
-//    }
+    QWebEnginePage  *createWindow(WebWindowType type)
+    {
+
+        if(type == QWebEnginePage::WebBrowserTab)
+        {
+            db "create new web browser tab";
+            FakePage *webView = new FakePage();
+//            emit new_tab(webView);
+            return webView;
+        }
+
+//        if(type == QWebEnginePage::WebBrowserBackgroundTab)
+//        {
+//            db "create mew backgrouind";
+//            FakePage *webView = new FakePage();
+////            emit new_tab(webView);
+//            return webView;
+//        }
+        return nullptr;
+    }
 
 };
 

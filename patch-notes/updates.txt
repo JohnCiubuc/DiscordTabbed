@@ -1,0 +1,7 @@
+1. Added buttons under views that:
+    * Move view left
+    * Move view right
+    * Close view
+2. Preferences window can open up GPU settings now
+3. Fixed memory leak bug on closing embeds
+4. Doesn't require sign in if it's 2 views. If it's 3 or more, it does

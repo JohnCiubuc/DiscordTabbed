@@ -15,6 +15,7 @@ class PreferencesForm : public QWidget
     Q_OBJECT
 signals:
     void preferencesUpdated();
+    void embedGPUView();
 public:
     explicit PreferencesForm(QWidget *parent = nullptr);
     ~PreferencesForm();
@@ -32,6 +33,8 @@ private slots:
     void on_checkBox_2_clicked(bool checked);
 
     void on_plainTextEdit_textChanged();
+
+    void on_pushButton_clicked();
 
 private:
     void loadSettings();

@@ -1,7 +1,8 @@
 #include "DiscordTabbedPage.h"
 
-DiscordTabbedPage::DiscordTabbedPage(QObject *parent)
-    : QWebEnginePage{parent}
+DiscordTabbedPage::DiscordTabbedPage(QWebEngineProfile * profile,QObject *parent)
+    : QWebEnginePage{profile,
+                     parent}
 {
     interp = new WebUrlRequestInterceptor;
     this->setUrlRequestInterceptor(interp);
@@ -34,4 +35,9 @@ bool DiscordTabbedPage::acceptNavigationRequest(const QUrl &url, NavigationType 
         return false;
     }
     return true;
+}
+
+void DiscordTabbedPage::requestDelete()
+{
+    this->deleteLater();
 }

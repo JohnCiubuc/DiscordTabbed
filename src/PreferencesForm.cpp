@@ -67,3 +67,9 @@ void PreferencesForm::on_plainTextEdit_textChanged()
     emit preferencesUpdated();
 }
 
+
+void PreferencesForm::on_pushButton_clicked()
+{
+    emit embedGPUView();
+}
+

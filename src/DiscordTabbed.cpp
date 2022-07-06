@@ -1,11 +1,16 @@
 #include "DiscordTabbed.h"
 #include "ui_DiscordTabbed.h"
 
+#define MINIMAL_VIEWS 1
+
 DiscordTabbed::DiscordTabbed(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::DiscordTabbed)
 {
     ui->setupUi(this);
+//    ui->menubar->hide();
+    _profile = new QWebEngineProfile(QString::fromLatin1("DiscordTabbed"));  // unique profile store per qtwbengine version
+    _profile->setPersistentCookiesPolicy(QWebEngineProfile::ForcePersistentCookies);
 
     QSettings settings("DiscordTabbed");
     this->setGeometry(settings.value("geometry", this->geometry()).toRect());
@@ -14,21 +19,38 @@ DiscordTabbed::DiscordTabbed(QWidget *parent)
     _Preferences = new PreferencesForm();
     connect(_Preferences, &PreferencesForm::preferencesUpdated, this, &DiscordTabbed::preferencesUpdated);
 
+    connect(_Preferences, &PreferencesForm::embedGPUView, this, [=]()
+    {
+        _lastDiscordChannel = QUrl("chrome://gpu");
+        generateNewView();
+    });
+
     _split = new QSplitter();
     ui->horizontalLayout->addWidget(_split);
 
     _lastDiscordChannel = QUrl("https://discord.com/login?redirect_to=%2Fchannels%2F%40me");
+//    _lastDiscordChannel = QUrl("chrome://gpu");
     generateNewView();
 // Shortcuts
-    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_D), this), &QShortcut::activated,
+    connect(new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_D), this), &QShortcut::activated,
             this, &DiscordTabbed::generateNewView);
-    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_D), this), &QShortcut::activated,
+    connect(new QShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_D), this), &QShortcut::activated,
             this, &DiscordTabbed::removeLastView);
 }
 
 DiscordTabbed::~DiscordTabbed()
 {
-
+    for (auto view : _views)
+    {
+        view->setPage(new QWebEnginePage());
+//        view->deleteLater();
+    }
+//    for (int i = 0; i < _split->count(); ++i)
+//    {
+//        auto w = _split->widget(i);
+//        dynamic_cast<ViewForm*>(w)->getView()->deleteLater();
+//        w->deleteLater();
+//    }
     QSettings settings("DiscordTabbed");
     settings.setValue("geometry", this->geometry());
     delete ui;
@@ -56,41 +78,82 @@ void DiscordTabbed::urlChanged(QUrl url)
 void DiscordTabbed::generateNewView()
 {
     // Create new view, set minimal width for splitter
-    _ctrlD = 0;
-    _views << new QWebEngineView(this);
-    _views.last()->setMinimumWidth(200);
-
-
-
-//    // Make it spiffy
-//    _views.last()->settings()
-//    ->setAttribute(QWebSettings::JavascriptEnabled, true);
-//    _views.last()->settings()
-//    ->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows,true);
-
-    // If this is the first view, its the one with channels
-    if (_views.size() == 1)
-        connect(_views.last(), &QWebEngineView::urlChanged, this, &DiscordTabbed::urlChanged);
-    connect(_views.last()->page(), &QWebEnginePage::linkHovered, this, [=](const QString &url)
     {
-        db url;
-    });
+//        auto profile = QWebEngineProfile::defaultProfile();
+//        profile->setPersistentCookiesPolicy(QWebEngineProfile::AllowPersistentCookies);
+//        _ctrlD = 0;
+//        _views << new QWebEngineView();
+//        _views.last()->setMinimumWidth(200);
+//        _views.last()->setAttribute(Qt::WA_DeleteOnClose);
+
+//        // Create page
+//        DiscordTabbedPage * page = new DiscordTabbedPage(profile, _views.last());
+////    page->profile()-
+//        page->setEmbedLinks(_Preferences->getEmbedLinks());
+
+//        connect(page, &DiscordTabbedPage::generateViewWithURL, this, &DiscordTabbed::generateViewWithURL);
+//        _views.last()->setPage(page);
+
+//        ViewForm * w = new ViewForm();
+//        w->setViewWidget(_views.last());
+//        w->updateIndex(_split->count());
+//        // Add view to splitter
+//        _split->addWidget(w);
+//        _views.last()->load(QUrl("https://youtu.be/Qjh1EBktSuU"));
+    }
+    auto profile = QWebEngineProfile::defaultProfile();
+    profile->setPersistentCookiesPolicy(QWebEngineProfile::AllowPersistentCookies);
+    _ctrlD = 0;
+    _views << new QWebEngineView();
+    _views.last()->setMinimumWidth(200);
+    _views.last()->setAttribute(Qt::WA_DeleteOnClose);
+//    _views.last()->page()->createWindow(1);
+    // If this is the first view, its the one with channels
+    if (_views.size() == MINIMAL_VIEWS)
+        connect(_views.last(), &QWebEngineView::urlChanged, this, &DiscordTabbed::urlChanged);
 
     // Create page
-    QWebEngineProfile *profile = new QWebEngineProfile(QString::fromLatin1("DiscordTabbed.%1"));  // unique profile store per qtwbengine version
-    profile->setPersistentCookiesPolicy(QWebEngineProfile::ForcePersistentCookies);
-
-    DiscordTabbedPage * page = new DiscordTabbedPage(profile);
+    DiscordTabbedPage * page = new DiscordTabbedPage(profile, _views.last());
+//    page->profile()-
     page->setEmbedLinks(_Preferences->getEmbedLinks());
 
     connect(page, &DiscordTabbedPage::generateViewWithURL, this, &DiscordTabbed::generateViewWithURL);
     _views.last()->setPage(page);
 
+    ViewForm * w = new ViewForm();
+    w->setViewWidget(_views.last());
+    w->updateIndex(_split->count());
+
+    if (_views.size() >MINIMAL_VIEWS)
+    {
+        connect(w, &ViewForm::moveSplitterView, this, [=](QWidget * w, int index)
+        {
+            auto count = _split->count();
+            if (index >= count)
+            {
+                index= count-1;
+                dynamic_cast<ViewForm*>(w)->updateIndex(index);
+            }
+            _split->insertWidget(index, w);
+        });
+        connect(w, &ViewForm::closeSplitterView, this, [=](QWidget * w)
+        {
+//            w->hide();
+//            _views.removeOne(dynamic_cast<QWebEngineView*>(dynamic_cast<ViewForm*>(w)->getView()));
+            dynamic_cast<ViewForm*>(w)->getView()->deleteLater();
+            w->deleteLater();
+        });
+    }
+    else
+    {
+        w->hideLayoutButtons();
+    }
+
     // Add view to splitter
-    _split->addWidget(_views.last());
+    _split->addWidget(w);
 
     // If this is a sub-view, strip channels
-    if (_views.size() != 1)
+    if (_views.size() > MINIMAL_VIEWS)
     {
         connect(_views.last(), &QWebEngineView::urlChanged, this, [=]()
         {
@@ -108,47 +171,24 @@ void DiscordTabbed::generateNewView()
 
 void DiscordTabbed::removeLastView()
 {
+    return;
     _ctrlD = 0;
-    if (_views.size() < 2) return;
+    if (_views.size() < MINIMAL_VIEWS) return;
     _views.last()->hide();
-    _views.takeLast()->deleteLater();
+    auto view = _views.takeLast();
+
+    QWidget * w = new QWidget;
+    view->setParent(w);
+    view->page()->deleteLater();
+    view->deleteLater();
+    w->deleteLater();
+
+//    dynamic_cast<DiscordTabbedPage*>(view->page())->requestDelete();
+//    delete view->page()->profile();
+//    delete view->page();
+//    delete view;
+
 }
-
-bool DiscordTabbed::eventFilter(QObject *obj, QEvent *ev)
-{
-//    if (ev->type() == QEvent::KeyPress)
-//    {
-//        db static_cast<QKeyEvent*>(ev)->key();
-//        if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Control ||
-//                static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Shift)
-//            _ctrlD++;
-//        else if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_D)
-//        {
-//            switch(_ctrlD)
-//            {
-//            case 1:
-//                generateNewView();
-//                break;
-//            case 2:
-//                removeLastView();
-//                break;
-//            }
-
-//        }
-//        else if (ev->type() == QEvent::KeyRelease)
-//        {
-//            if (static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Control ||
-//                    static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Shift)
-//            {
-//                _ctrlD--;
-//                if (_ctrlD<0)
-//                    _ctrlD = 0;
-//            }
-//        }
-//    }
-    return QMainWindow::eventFilter(obj, ev);
-}
-
 
 void DiscordTabbed::on_actionReload_Far_Left_View_triggered()
 {
@@ -171,7 +211,6 @@ void DiscordTabbed::generateViewWithURL(QUrl url)
     _lastDiscordChannel = old;
 }
 
-
 void DiscordTabbed::on_actionOpen_Preferences_triggered()
 {
     _Preferences->show();
@@ -180,8 +219,11 @@ void DiscordTabbed::on_actionOpen_Preferences_triggered()
 void DiscordTabbed::preferencesUpdated()
 {
     for (auto view : _views)
-        dynamic_cast<DiscordTabbedPage*>(view->page())
-        ->setEmbedLinks(_Preferences->getEmbedLinks());
+        if (view)
+        {
+            dynamic_cast<DiscordTabbedPage*>(view->page())
+            ->setEmbedLinks(_Preferences->getEmbedLinks());
+        }
 }
 
 

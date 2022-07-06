@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     src/PreferencesForm.cpp \
+    src/ViewForm.cpp \
     src/main.cpp \
     src/DiscordTabbed.cpp \
     src/DiscordTabbedPage.cpp
@@ -17,11 +18,13 @@ SOURCES += \
 HEADERS += \
     src/PreferencesForm.h \
     src/DiscordTabbed.h \
-    src/DiscordTabbedPage.h
+    src/DiscordTabbedPage.h \
+    src/ViewForm.h
 
 FORMS += \
     src/PreferencesForm.ui \
-    src/DiscordTabbed.ui
+    src/DiscordTabbed.ui \
+    src/ViewForm.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

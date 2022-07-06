@@ -15,6 +15,7 @@
 
 #include "DiscordTabbedPage.h"
 #include "PreferencesForm.h"
+#include "ViewForm.h"
 #define db qDebug() << this <<
 
 QT_BEGIN_NAMESPACE
@@ -50,10 +51,11 @@ private:
     Ui::DiscordTabbed *ui;
     QUrl _lastDiscordChannel;
     QList<QWebEngineView*> _views;
+    QMap<QWebEngineView*, QWidget*> _viewMaps;
     QSplitter * _split;
     PreferencesForm * _Preferences;
     int _ctrlD = 0;
-protected:
-    bool eventFilter(QObject *obj, QEvent *ev);
+    QWebEngineProfile * _profile;
+
 };
 #endif // DISCORDTABBED_H
