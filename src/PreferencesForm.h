@@ -24,17 +24,13 @@ public:
     {
         return _embedLinks;
     }
-//    bool getYoutubeEmbed();
-//    bool getTwitchEmbed();
 private slots:
-
-    void on_checkBox_clicked(bool checked);
-
-    void on_checkBox_2_clicked(bool checked);
 
     void on_plainTextEdit_textChanged();
 
     void on_pushButton_clicked();
+
+    void on_checkBox_SS_clicked(bool checked);
 
 private:
     void loadSettings();

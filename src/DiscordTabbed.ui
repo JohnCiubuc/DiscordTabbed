@@ -14,7 +14,7 @@
    <string>DiscordTabbed</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(54, 57, 63);
+   <string notr="true">background-color:rgb(47, 49, 54);
 color: rgb(246, 245, 244);</string>
   </property>
   <widget class="QWidget" name="centralwidget">

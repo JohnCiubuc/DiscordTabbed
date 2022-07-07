@@ -20,7 +20,7 @@ void ViewForm::setViewWidget(QWidget *w)
 //    ui->gridLayout->addWidget(ui->pushButton_2,0,2);
 //    ui->gridLayout->addWidget(ui->pushButton_3, 0,3);
 //    ui->gridLayout->addItem(ui->horizontalSpacer_2, 0,4);
-    ui->gridLayout->addWidget(w, 0,0, 1,5);
+    ui->gridLayout->addWidget(w, 0,0, 1,6);
     _view = w;
 }
 

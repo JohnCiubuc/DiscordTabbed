@@ -38,10 +38,8 @@ public:
 private slots:
     void urlChanged(QUrl url);
     void generateNewView();
-    void removeLastView();
     void on_actionReload_Far_Left_View_triggered();
 
-    void on_actionExpand_Retract_Left_View_triggered();
     void generateViewWithURL(QUrl url);
     void on_actionOpen_Preferences_triggered();
     void preferencesUpdated();
@@ -54,8 +52,6 @@ private:
     QMap<QWebEngineView*, QWidget*> _viewMaps;
     QSplitter * _split;
     PreferencesForm * _Preferences;
-    int _ctrlD = 0;
-    QWebEngineProfile * _profile;
 
 };
 #endif // DISCORDTABBED_H

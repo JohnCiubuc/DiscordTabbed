@@ -16,33 +16,6 @@ PreferencesForm::~PreferencesForm()
     delete ui;
 }
 
-//bool PreferencesForm::getYoutubeEmbed()
-//{
-//    return ui->checkBox->isChecked();
-//}
-
-//bool PreferencesForm::getTwitchEmbed()
-//{
-//    return ui->checkBox_2->isChecked();
-//}
-
-
-void PreferencesForm::on_checkBox_clicked(bool checked)
-{
-    QSettings settings("DiscordTabbed");
-    settings.setValue("youtube-embed", checked);
-    emit preferencesUpdated();
-}
-
-
-void PreferencesForm::on_checkBox_2_clicked(bool checked)
-{
-
-    QSettings settings("DiscordTabbed");
-    settings.setValue("twitch-embed", checked);
-    emit preferencesUpdated();
-}
-
 void PreferencesForm::loadSettings()
 {
 
@@ -52,8 +25,9 @@ void PreferencesForm::loadSettings()
         ui->plainTextEdit->setPlainText(_embedLinks.join('\n'));
     else
         _embedLinks = ui->plainTextEdit->toPlainText().split('\n');
-//    ui->checkBox->setChecked(settings.value("youtube-embed", true).toBool());
-//    ui->checkBox_2->setChecked(settings.value("twitch-embed", true).toBool());
+
+
+    ui->checkBox_SS->setChecked(settings.value("smooth-scroll", true).toBool());
 }
 
 
@@ -71,5 +45,13 @@ void PreferencesForm::on_plainTextEdit_textChanged()
 void PreferencesForm::on_pushButton_clicked()
 {
     emit embedGPUView();
+}
+
+
+void PreferencesForm::on_checkBox_SS_clicked(bool checked)
+{
+    QSettings settings("DiscordTabbed");
+    settings.setValue("smooth-scroll", checked);
+    emit preferencesUpdated();
 }
 
