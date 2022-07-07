@@ -102,7 +102,7 @@ void DiscordTabbed::generateNewView()
 //        _views.last()->load(QUrl("https://youtu.be/Qjh1EBktSuU"));
     }
     auto profile = QWebEngineProfile::defaultProfile();
-    profile->setPersistentCookiesPolicy(QWebEngineProfile::AllowPersistentCookies);
+    profile->setPersistentCookiesPolicy(QWebEngineProfile::ForcePersistentCookies);
     _ctrlD = 0;
     _views << new QWebEngineView();
     _views.last()->setMinimumWidth(200);

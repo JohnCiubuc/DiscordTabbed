@@ -41,3 +41,18 @@ void DiscordTabbedPage::requestDelete()
 {
     this->deleteLater();
 }
+
+void DiscordTabbedPage::urlManager(QUrl url)
+{
+    QString urlString = url.toString();
+    for (auto link : _embedLinks)
+    {
+        if(urlString.contains(link))
+        {
+            emit generateViewWithURL(url);
+            return;
+        }
+    }
+    QDesktopServices::openUrl(url);
+    return;
+}

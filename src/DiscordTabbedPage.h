@@ -44,12 +44,16 @@ private:
 
 class FakePage : public QWebEnginePage
 {
+    Q_OBJECT
+signals:
+    void FakePageURL(QUrl);
 public:
     explicit FakePage()
     {
         connect(this, &QWebEnginePage::urlChanged, this, [=](QUrl url)
         {
-            QDesktopServices::openUrl(url);
+            emit FakePageURL(url);
+//            QDesktopServices::openUrl(url);
             this->deleteLater();
         });
     }
@@ -65,6 +69,8 @@ public:
     void setEmbedLinks(QStringList list);
     bool acceptNavigationRequest(const QUrl & url, QWebEnginePage::NavigationType type, bool isMainFrame);
     void requestDelete();
+private slots:
+    void urlManager(QUrl);
 private:
     bool _bNewLink = false;
     bool _bYoutubeEmbed;
@@ -76,22 +82,26 @@ protected:
     QWebEnginePage  *createWindow(WebWindowType type)
     {
 
-        if(type == QWebEnginePage::WebBrowserTab)
-        {
-            db "create new web browser tab";
-            FakePage *webView = new FakePage();
-//            emit new_tab(webView);
-            return webView;
-        }
-
-//        if(type == QWebEnginePage::WebBrowserBackgroundTab)
+//        if(type == QWebEnginePage::WebBrowserTab)
 //        {
-//            db "create mew backgrouind";
-//            FakePage *webView = new FakePage();
-////            emit new_tab(webView);
-//            return webView;
+//            db "create new web browser tab";
+
 //        }
-        return nullptr;
+//        else
+//            db "create nullptr window" << type;
+
+////        if(type == QWebEnginePage::WebBrowserBackgroundTab)
+////        {
+////            db "create mew backgrouind";
+////            FakePage *webView = new FakePage();
+//////            emit new_tab(webView);
+////            return webView;
+////        }
+//        return nullptr;
+        FakePage *webView = new FakePage();
+        connect(webView, &FakePage::FakePageURL, this, &DiscordTabbedPage::urlManager);
+//            emit new_tab(webView);
+        return webView;
     }
 
 };
